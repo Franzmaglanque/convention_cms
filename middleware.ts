@@ -17,7 +17,7 @@ export function middleware(request: NextRequest) {
 
   // 4. If the user HAS a token, and they try to visit /login -> Redirect to dashboard (/)
   if (token && isLoginPage) {
-    return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   // 5. Otherwise, let them proceed normally

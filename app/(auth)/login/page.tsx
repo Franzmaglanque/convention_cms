@@ -70,7 +70,7 @@ export default function LoginPage() {
         await createSession(data.data.token);
         
         // 3. Redirect to the protected dashboard
-        router.push('/');
+        router.push('/dashboard');
       } else {
         // Handle login failure (e.g., show Mantine notification)
         console.error(data.message);
