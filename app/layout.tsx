@@ -21,9 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <QueryProvider>
           <MantineProvider theme={theme}>
             {/* Wrap your children in the new Shell */}
-            <AppShellLayout>
-                {children}
-            </AppShellLayout>
+            {children}
           </MantineProvider>
         </QueryProvider>
       </body>

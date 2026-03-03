@@ -45,17 +45,16 @@ export default function LoginPage() {
   const onSubmit = async (values: LoginInput) => {
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        credentials: 'include', // IMPORTANT: Allows cookies to be set and sent
+        // credentials: 'include', // IMPORTANT: Allows cookies to be set and sent
         body: JSON.stringify({
-          login: values.login,
+          username: values.login,
           password: values.password,
-          rememberMe: values.rememberMe, // Send to backend for cookie duration
         }),
       });
 
@@ -101,6 +100,16 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+
+    console.log({
+      login: values.login,
+      password: values.password,
+        });
+     showErrorNotification(
+          'Login Failed',
+          'Incorrect credentials'
+        );
+        console.log('hdjskahdjksahjdsa')
   };
 
   return (
