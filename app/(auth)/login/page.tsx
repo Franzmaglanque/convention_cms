@@ -15,6 +15,8 @@ import {
 } from '@mantine/core';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useAuthStore } from '@/store/useAuthStore';
+import { createSession } from '@/app/actions/auth';
 import { z,} from 'zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -24,6 +26,7 @@ import { showSuccessNotification, showErrorNotification, showWarningNotification
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const setUser = useAuthStore((state) => state.setUser);
   const router = useRouter();
 
   const {
@@ -45,7 +48,7 @@ export default function LoginPage() {
   const onSubmit = async (values: LoginInput) => {
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,39 +61,52 @@ export default function LoginPage() {
         }),
       });
 
-      const data = await response.json();
-
-      if (response.ok && data.status) {
-        // Cookie is already set by Laravel backend with HttpOnly flag
-        // No need for: document.cookie = ...
-
-        // Store token in localStorage for API requests (header: x-account-session-token)
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-        }
-
-        // Store user information for UI display
-        if (data.user) {
-          localStorage.setItem('user', JSON.stringify(data.user));
-        }
-
-        showSuccessNotification(
-          'Login Success',
-          data.message || 'Credentials authenticated'
-        );
-
-        // Redirect to dashboard or intended page
-        router.push('/dashboard');
+      const data = await res.json();
+      if (data.result === 'success') {
+        // 1. Save user data to Zustand for the UI
+        setUser(data.data.user);
+        
+        // 2. Save the JWT to an HttpOnly cookie via Server Action
+        await createSession(data.data.token);
+        
+        // 3. Redirect to the protected dashboard
+        router.push('/');
       } else {
-        showErrorNotification(
-          'Login Failed',
-          data.message || 'Incorrect credentials'
-        );
-        reset({
-          login: values.login, // Keep the login they entered
-          password: '', // Clear the password
-        });
+        // Handle login failure (e.g., show Mantine notification)
+        console.error(data.message);
       }
+
+      // if (response.ok && data.status) {
+      //   // Cookie is already set by Laravel backend with HttpOnly flag
+      //   // No need for: document.cookie = ...
+
+      //   // Store token in localStorage for API requests (header: x-account-session-token)
+      //   if (data.token) {
+      //     localStorage.setItem('token', data.token);
+      //   }
+
+      //   // Store user information for UI display
+      //   if (data.user) {
+      //     localStorage.setItem('user', JSON.stringify(data.user));
+      //   }
+
+      //   showSuccessNotification(
+      //     'Login Success',
+      //     data.message || 'Credentials authenticated'
+      //   );
+
+      //   // Redirect to dashboard or intended page
+      //   router.push('/dashboard');
+      // } else {
+      //   showErrorNotification(
+      //     'Login Failed',
+      //     data.message || 'Incorrect credentials'
+      //   );
+      //   reset({
+      //     login: values.login, // Keep the login they entered
+      //     password: '', // Clear the password
+      //   });
+      // }
     } catch (error) {
       showErrorNotification(
         'Error',
