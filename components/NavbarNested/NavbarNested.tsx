@@ -9,7 +9,7 @@ import {
   IconFileText,
   IconSettings,
   IconShield,
-  IconChevronRight,
+  IconBuildingFactory,
 } from '@tabler/icons-react';
 import { useState } from 'react';
 
@@ -37,6 +37,8 @@ const data = [
   { icon: IconFileText, label: 'Contracts' },
   { icon: IconSettings, label: 'Settings' },
   { icon: IconShield, label: 'Security' },
+  { icon: IconBuildingFactory, label: 'Manage Suppliers' },
+
 ];
 
 export function NavbarNested() {

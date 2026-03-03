@@ -1,4 +1,6 @@
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';       // 1. Add this for date filtering features
+import 'mantine-react-table/styles.css';  // 2. Add this for the table styles
 
 import React from 'react';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
