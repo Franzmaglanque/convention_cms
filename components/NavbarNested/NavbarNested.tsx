@@ -14,7 +14,7 @@ import {
 import { useState } from 'react';
 
 const data = [
-  { icon: IconDashboard, label: 'Dashboard' },
+  { icon: IconDashboard, label: 'Dashboard',link:'/dashboard' },
   {
     icon: IconNews,
     label: 'Market news',
@@ -37,7 +37,7 @@ const data = [
   { icon: IconFileText, label: 'Contracts' },
   { icon: IconSettings, label: 'Settings' },
   { icon: IconShield, label: 'Security' },
-  { icon: IconBuildingFactory, label: 'Manage Suppliers' },
+  { icon: IconBuildingFactory, label: 'Manage Suppliers',link:'/supplier' },
 
 ];
 
@@ -64,6 +64,7 @@ const items = data.map((item) => {
         onClick={() => !hasLinks && setActive(item.label)} // Only set active if it's a direct link
         variant="light"
         childrenOffset={28} // This controls the indent of the sub-menu items
+        href={item.link}
     >
         {/* If nestedLinks exists, Mantine automatically makes this a dropdown! */}
         {nestedLinks}
