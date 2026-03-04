@@ -26,7 +26,8 @@ import { showSuccessNotification, showErrorNotification, showWarningNotification
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
-  const setUser = useAuthStore((state) => state.setUser);
+  const setAuth = useAuthStore((state) => state.setAuth);
+
   const router = useRouter();
 
   const {
@@ -64,7 +65,7 @@ export default function LoginPage() {
       const data = await res.json();
       if (data.result === 'success') {
         // 1. Save user data to Zustand for the UI
-        setUser(data.data.user);
+        setAuth(data.data.user, data.data.token)
         
         // 2. Save the JWT to an HttpOnly cookie via Server Action
         await createSession(data.data.token);

@@ -1,8 +1,16 @@
-export const fetchSupplierRecords = async() => {
-    try {
+import { useAuthStore } from '@/store/useAuthStore';
+const token = useAuthStore.getState().token;
 
+export const fetchSupplierRecords = async() => {
+
+    try {
+ 
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/supplier/fetch-list`, {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            }
         });
 
         if (!res.ok) {

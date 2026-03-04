@@ -16,14 +16,20 @@ import { NavbarNested } from '../NavbarNested/NavbarNested';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
 import { clearSession } from '@/app/actions/auth'; // Ensure this path matches your auth action
+import { useEffect, useState } from 'react';
 
 export function AppShellLayout({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();
   const router = useRouter();
-  
+  const [isMounted, setIsMounted] = useState(false);
   // Get user data and logout function from Zustand
   const user = useAuthStore((state) => state.user);
   const logoutState = useAuthStore((state) => state.logout);
+
+  // 2. Set mounted to true once the component loads in the browser
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     // 1. Clear the HttpOnly cookie via server action
@@ -69,10 +75,10 @@ export function AppShellLayout({ children }: { children: React.ReactNode }) {
                 <Group gap={8}>
                   <Avatar radius="xl" size="sm" color="blue">
                     {/* Shows first letter of fullname, or 'U' as fallback */}
-                    {user?.fullname?.charAt(0) || 'U'}
+                    {isMounted ? (user?.fullname?.charAt(0) || 'U') : ''}
                   </Avatar>
                   <Text fw={500} size="sm" lh={1} mr={3}>
-                    Hello, {user?.fullname || 'User'}
+                    Hello,{isMounted ? (user?.fullname || 'User') : '...'}
                   </Text>
                   <IconChevronDown size={14} stroke={1.5} />
                 </Group>
