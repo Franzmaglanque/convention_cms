@@ -24,7 +24,7 @@ type SupplierProducts = {
     barcode: string;
     description: string;
     promo_price: string;
-    is_active: number; 
+    is_active: string; 
 };
 
 type SupplierProductsDatatableProps = {
@@ -85,20 +85,25 @@ export const SupplierProductsDatatable = ({ products,vendor_code }: SupplierProd
             // Left completely editable
         },
         {
-            accessorKey: 'is_active',
+            // accessorFn: (row) => (row.is_active === 1 ? 'true' : 'false'),
+            accessorKey:'is_active',
+            id: 'is_active',
             header: 'Status',
             editVariant: 'select',
             mantineEditSelectProps: {
                 data: [
-                    { value: '1', label: 'Active' },
-                    { value: '0', label: 'Inactive' },
+                    { value: 'true', label: 'Active' },
+                    { value: 'false', label: 'Inactive' },
                 ],
             },
             Cell: ({ cell }) => {
-                const value = Number(cell.getValue()); 
+                const value = cell.getValue();
+                // console.log('djklasjdklsadsa',value);
+                const isActive = value === 'true';
+                // console.log('is_active',isActive);
                 return (
-                    <Badge color={value === 1 ? 'green' : 'red'} variant="light">
-                        {value === 1 ? 'Active' : 'Inactive'}
+                    <Badge color={isActive ? 'green' : 'red'} variant="light">
+                        {isActive ? 'Active' : 'Inactive'}
                     </Badge>
                 );
             },
@@ -122,6 +127,7 @@ export const SupplierProductsDatatable = ({ products,vendor_code }: SupplierProd
 
     const handleSaveProduct: MRT_TableOptions<SupplierProducts>['onEditingRowSave'] = async ({
         values,
+        row,
         table,
     }) => {
         if (!values.sku) {
@@ -130,7 +136,9 @@ export const SupplierProductsDatatable = ({ products,vendor_code }: SupplierProd
         }
         const params = {
             ...values,
-            vendor_code:vendor_code
+            id: row.original.id,
+            // is_active: values.is_active === 'true' ? 1 : 0,
+            vendor_code: vendor_code
         }
         try {
             const updateResponse = await updateProductMutation.mutateAsync(params);
@@ -193,11 +201,6 @@ export const SupplierProductsDatatable = ({ products,vendor_code }: SupplierProd
                 <Tooltip label="Edit">
                     <ActionIcon onClick={() => table.setEditingRow(row)} color="blue" variant="subtle">
                         <IconEdit size={20} stroke={1.5} />
-                    </ActionIcon>
-                </Tooltip>
-                <Tooltip label="Delete">
-                    <ActionIcon onClick={() => handleDeleteProduct(row)} color="red" variant="subtle">
-                        <IconTrash size={20} stroke={1.5} />
                     </ActionIcon>
                 </Tooltip>
             </Group>
