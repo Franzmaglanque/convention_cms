@@ -1,14 +1,17 @@
+'use client';
+
 import '@mantine/core/styles.css';
-import '@mantine/dates/styles.css'; //if using mantine date picker features
-import 'mantine-react-table/styles.css'; //make sure MRT styles were imported in your app root (once)
-import clsx from 'clsx';
+import '@mantine/dates/styles.css'; 
+import 'mantine-react-table/styles.css'; 
 import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   type MRT_ColumnDef,
   MantineReactTable,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { Badge, Paper, useMantineColorScheme } from '@mantine/core';
+import { Badge, Paper, ActionIcon, Tooltip } from '@mantine/core';
+import { IconEye } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchSupplierRecords } from '@/api/supplier_api';
 
@@ -18,18 +21,18 @@ export type Supplier = {
     is_active: string;
 };
 
-export const Example = () => {
+export const SupplierDatatable = () => {
+    const router = useRouter(); // Next.js router for redirection
+
     const { data, isLoading } = useQuery({
         queryKey: ['BatchRecords'],
         queryFn: () => fetchSupplierRecords(),
     });
-    
-    const { colorScheme } = useMantineColorScheme();
 
     const columns = useMemo<MRT_ColumnDef<Supplier>[]>(
         () => [
         {
-            accessorKey: 'supplierCode',
+            accessorKey: 'supplier_code', // Updated to match type definition
             header: 'Supplier Code',
         },
         {
@@ -40,12 +43,11 @@ export const Example = () => {
             accessorKey: 'is_active',
             header: 'Status',
             Cell: ({ cell }) => {
-                const value = cell.getValue();
-
+                const value = cell.getValue<string>();
                 return (
-                <Badge color={value === '1' ? 'green' : 'red'} variant="light">
-                    {value === '1' ? 'Active' : 'Inactive'}
-                </Badge>
+                    <Badge color={value === '1' ? 'green' : 'red'} variant="light">
+                        {value === '1' ? 'Active' : 'Inactive'}
+                    </Badge>
                 );
             },
         }
@@ -53,35 +55,46 @@ export const Example = () => {
         [],
     );
 
-    console.log('suppliers',data);
-
     const table = useMantineReactTable({
         columns,
-        data:data ?? [],
+        data: data ?? [],
         state: {
-            isLoading, // 2. Triggers the animated skeleton while fetching
+            isLoading, 
         },
-        // 3. Removed all the enable___: false lines to restore default features!
-        
-        // 4. UI Polish: Adds standard page numbers instead of just next/prev arrows
+        initialState: {
+            density: 'xs',
+        },
+
+        // --- NEW: Enable Row Actions ---
+        enableRowActions: true,
+        positionActionsColumn: 'last', // Places the action column on the far right
+        renderRowActions: ({ row }) => (
+            <Tooltip label="View Supplier Details">
+                <ActionIcon 
+                    color="blue" 
+                    variant="light"
+                    onClick={() => router.push(`/supplier/${row.original.supplier_code}`)}
+                >
+                    <IconEye size={20} stroke={1.5} />
+                </ActionIcon>
+            </Tooltip>
+        ),
+        // -------------------------------
+
         paginationDisplayMode: 'pages', 
-        
-        // 5. UI Polish: Wraps the table in a nice card with a shadow
         mantinePaperProps: {
             shadow: 'sm',
             radius: 'md',
             withBorder: true,
         },
         mantineTableProps: {
-            striped: 'even', // Alternating row colors are easier to read
-            highlightOnHover: true, // Highlights row on mouse hover
+            striped: 'even', 
+            highlightOnHover: true, 
             withColumnBorders: true,
             withRowBorders: true,
         },
     });
 
-    //using MRT_Table instead of MantineReactTable if we do not want any of the toolbar features
-    // return <MantineReactTable table={table} />;
     return (
         <Paper p="sm" radius="md">
             <MantineReactTable table={table} />
@@ -89,4 +102,4 @@ export const Example = () => {
     );
 };
 
-export default Example;
+export default SupplierDatatable;

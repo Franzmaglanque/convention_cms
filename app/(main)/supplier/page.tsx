@@ -1,25 +1,33 @@
 'use client';
 
-import { Title, Button, Text, Group, Badge, SimpleGrid, Paper } from '@mantine/core';
-import { IconPlus, IconReceipt2, IconUsers, IconTicket } from '@tabler/icons-react';
+import { Title, Button, Text, Group, Container } from '@mantine/core';
+import { IconPlus } from '@tabler/icons-react';
 import { Suspense } from 'react';
-import { useQuery, useMutation } from "@tanstack/react-query";
-import Example from '@/components/datatables/suppliersDatatable';
+import SupplierDatatable from '@/components/datatables/suppliersDatatable';
 
 function Supplier() {
-    // You can use React Query here later to fetch real dashboard statistics
-    // const { data, isLoading } = useQuery({ queryKey: ['dashboardStats'], queryFn: fetchStats });
-
     return (
-        <>
-           <Example />
-        </>
+        <Container fluid px={0}>
+            {/* Page Header (Matches your Dashboard style) */}
+            <Group justify="space-between" align="center" mb="xl">
+                <div>
+                    <Title order={2}>Suppliers</Title>
+                    <Text c="dimmed" size="sm">Manage and view your supplier network</Text>
+                </div>
+                <Button leftSection={<IconPlus size={16} />}>
+                    New Supplier
+                </Button>
+            </Group>
+
+            {/* Main Data Table */}
+            <SupplierDatatable />
+        </Container>
     );
 }
 
 export default function SupplierPage() {
     return (
-        <Suspense fallback={<Text>Loading dashboard...</Text>}>
+        <Suspense fallback={<Text>Loading suppliers...</Text>}>
             <Supplier />
         </Suspense>
     );
