@@ -77,15 +77,12 @@ export const SupplierProductsDatatable = ({ products,vendor_code }: SupplierProd
         {
             accessorKey: 'description',
             header: 'Description',
-            // Left completely editable
         },
         {
             accessorKey: 'promo_price',
             header: 'Price',
-            // Left completely editable
         },
         {
-            // accessorFn: (row) => (row.is_active === 1 ? 'true' : 'false'),
             accessorKey:'is_active',
             id: 'is_active',
             header: 'Status',
@@ -160,12 +157,6 @@ export const SupplierProductsDatatable = ({ products,vendor_code }: SupplierProd
             // ❌ Network failed completely. Leave modal open and notify user.
             console.error('Mutation failed:', error);
             showErrorNotification('Error', 'A network error occurred while updating the product.');
-        }
-    };
-
-    const handleDeleteProduct = (row: any) => {
-        if (window.confirm(`Are you sure you want to delete SKU ${row.original.sku}?`)) {
-            console.log('Deleting product ID:', row.original.id);
         }
     };
 
