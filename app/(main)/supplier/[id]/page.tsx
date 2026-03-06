@@ -26,11 +26,8 @@ export default function SupplierDetailsPage() {
     const router = useRouter();
     const queryClient = useQueryClient();
     const supplierCode = params.id as string; 
-
-    // --- NEW: Modal & File State ---
     const [uploadModalOpened, { open: openUploadModal, close: closeUploadModal }] = useDisclosure(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    // -------------------------------
 
     const { data: supplier, isLoading } = useQuery({
         queryKey: ['Supplier', supplierCode],
@@ -76,6 +73,8 @@ export default function SupplierDetailsPage() {
 
     // 2. Fallback if supplier is not found
     if (!supplier) return <div>Supplier not found.</div>;
+    const activeProductCount = supplier.supplierProducts.filter((p:any) => p.is_active === 'true').length;
+
 
     return (
         <Container fluid px={0}>
@@ -149,7 +148,7 @@ export default function SupplierDetailsPage() {
                         <ThemeIcon color="green" variant="light" size="lg"><IconCurrencyDollar size={20} /></ThemeIcon>
                     </Group>
                     <Group align="flex-end" gap="xs" mt={25}>
-                        <Text size="xl" fw={700}>₱24,500.00</Text>
+                        <Text size="xl" fw={700}>₱{supplier.total_sales}</Text>
                         <Badge color="green" variant="light" size="sm" leftSection={<IconTrendingUp size={10}/>}>+14%</Badge>
                     </Group>
                 </Paper>
@@ -159,7 +158,7 @@ export default function SupplierDetailsPage() {
                         <Text size="xs" c="dimmed" tt="uppercase" fw={700}>Active Products</Text>
                         <ThemeIcon color="blue" variant="light" size="lg"><IconPackage size={20} /></ThemeIcon>
                     </Group>
-                    <Text size="xl" fw={700} mt={25}>{supplier.supplierProducts?.length || 0}</Text>
+                    <Text size="xl" fw={700} mt={25}>{activeProductCount || 0}</Text>
                 </Paper>
 
                 <Paper withBorder p="md" radius="md">
@@ -167,7 +166,7 @@ export default function SupplierDetailsPage() {
                         <Text size="xs" c="dimmed" tt="uppercase" fw={700}>Total Orders</Text>
                         <ThemeIcon color="orange" variant="light" size="lg"><IconReceipt2 size={20} /></ThemeIcon>
                     </Group>
-                    <Text size="xl" fw={700} mt={25}>342</Text>
+                    <Text size="xl" fw={700} mt={25}>{supplier.order_count}</Text>
                 </Paper>
 
                 <Paper withBorder p="md" radius="md">
@@ -197,10 +196,9 @@ export default function SupplierDetailsPage() {
                         </Tabs.Tab>
                     </Tabs.List>
 
-                    {/* NEW: Upload Button Group */}
+                    {/* Products Tab */}
                     <Tabs.Panel value="products">
-                        <Group justify="flex-end" mb="md" mt="md">
-                            {/* Changed from FileButton to a standard Button that opens the Modal */}
+                        {/* <Group justify="flex-start" mb="md" mt="md">
                             <Button 
                                 leftSection={<IconUpload size={16} />}
                                 color="teal"
@@ -208,17 +206,30 @@ export default function SupplierDetailsPage() {
                             >
                                 Bulk Upload Excel
                             </Button>
+                        </Group> */}
+                        <Group justify="space-between" mb="md" mt="md">
+                            <div>
+                                <Text fw={600}>Supplier Products</Text>
+                                <Text size="sm" c="dimmed">
+                                Manage supplier product list or upload in bulk.
+                                </Text>
+                            </div>
+
+                            <Button
+                                leftSection={<IconUpload size={16} />}
+                                variant="light"
+                                color="teal"
+                                radius="md"
+                                onClick={openUploadModal}
+                            >
+                                Bulk Upload
+                            </Button>
                         </Group>
                         
                         <SupplierProductsDatatable 
                             products={supplier.supplierProducts ?? []} 
                             vendor_code={supplierCode} 
                         />
-                    </Tabs.Panel>
-
-                    {/* Products Tab */}
-                    <Tabs.Panel value="products">
-                        <SupplierProductsDatatable products={supplier.supplierProducts ?? []} vendor_code={supplierCode} />
                     </Tabs.Panel>
 
                     {/* Users Tab (Placeholder for your next component) */}

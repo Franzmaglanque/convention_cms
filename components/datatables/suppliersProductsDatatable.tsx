@@ -109,19 +109,6 @@ export const SupplierProductsDatatable = ({ products,vendor_code }: SupplierProd
         [validationErrors],
     );
 
-    const handleCreateProduct: MRT_TableOptions<SupplierProducts>['onCreatingRowSave'] = async ({
-        values,
-        exitCreatingMode,
-    }) => {
-        if (!values.sku) {
-            setValidationErrors({ sku: 'SKU is required' });
-            return;
-        }
-
-        console.log('Creating new product:', values);
-        exitCreatingMode();
-    };
-
     const handleSaveProduct: MRT_TableOptions<SupplierProducts>['onEditingRowSave'] = async ({
         values,
         row,
@@ -180,7 +167,6 @@ export const SupplierProductsDatatable = ({ products,vendor_code }: SupplierProd
         },
         // -----------------------------
 
-        onCreatingRowSave: handleCreateProduct,
         onEditingRowSave: handleSaveProduct,
         onEditingRowCancel: () => setValidationErrors({}),
         state: {
@@ -195,17 +181,6 @@ export const SupplierProductsDatatable = ({ products,vendor_code }: SupplierProd
                     </ActionIcon>
                 </Tooltip>
             </Group>
-        ),
-
-        renderTopToolbarCustomActions: ({ table }) => (
-            <Button
-                leftSection={<IconPlus size={16} />}
-                onClick={() => {
-                    table.setCreatingRow(true); 
-                }}
-            >
-                New Product
-            </Button>
         ),
 
         paginationDisplayMode: 'pages', 
