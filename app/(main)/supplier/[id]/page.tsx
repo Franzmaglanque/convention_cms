@@ -15,11 +15,14 @@ import {
 import { useParams, useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchSupplierDetails } from '@/api/supplier_api';
-import SupplierProductsDatatable from '@/components/datatables/suppliersProductsDatatable';
 import { showErrorNotification, showSuccessNotification } from '@/lib/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'react';
 import { bulkUploadProducts } from '@/api/product_api';
+
+import SupplierProductsDatatable from '@/components/datatables/suppliersProductsDatatable';
+import SupplierOrdersDatatable from '@/components/datatables/suppliersOrdersDatatable';
+
 
 export default function SupplierDetailsPage() {
     const params = useParams();
@@ -133,7 +136,7 @@ export default function SupplierDetailsPage() {
             <Group justify="space-between" align="center" mb="xl">
                 <div>
                     <Title order={2}>{supplier?.supplier_details?.name || 'Supplier Details'}</Title>
-                    <Text c="dimmed" size="sm">Code: {supplierCode}</Text>
+                    <Text c="dimmed" size="sm">Vendor Code: <b>{supplierCode}</b></Text>
                 </div>
                 <Badge color={supplier.supplier_details.is_active === '1' ? 'green' : 'red'} size="lg" variant="light">
                     {supplier.supplier_details.is_active === '1' ? 'Active' : 'Inactive'}
@@ -240,8 +243,7 @@ export default function SupplierDetailsPage() {
 
                     {/* Orders Tab (Placeholder for your next component) */}
                     <Tabs.Panel value="orders">
-                        <Text c="dimmed" my="xl" ta="center">Orders history datatable will go here.</Text>
-                        {/* <SupplierOrdersDatatable orders={supplier.supplierOrders ?? []} /> */}
+                        <SupplierOrdersDatatable vendor_code={supplierCode} />
                     </Tabs.Panel>
 
                     {/* Info Tab (The original details card) */}

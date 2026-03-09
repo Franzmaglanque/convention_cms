@@ -150,7 +150,10 @@ export const SupplierProductsDatatable = ({ products,vendor_code }: SupplierProd
     const table = useMantineReactTable({
         columns,
         data: products ?? [],
-        initialState: { density: 'xs' },
+        initialState: { 
+            density: 'xs',
+            showGlobalFilter: true
+        },
         
         
         enableEditing: true,
