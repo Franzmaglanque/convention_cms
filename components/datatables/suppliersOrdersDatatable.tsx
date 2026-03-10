@@ -188,17 +188,17 @@ export const SupplierOrdersDatatable = ({ vendor_code }: SupplierOrdersDatatable
             }
         },
         {
-            accessorKey: 'created_at',
-            header: 'Date Created',
-        },
-        {
             accessorKey: 'item_count',
             header: 'Items Sold',
         },
         {
             accessorKey: 'customer_card_no',
             header: 'Customer Card #',
-        }],
+        },
+        {
+            accessorKey: 'created_at',
+            header: 'Date Created',
+        },],
         [validationErrors],
     );
 

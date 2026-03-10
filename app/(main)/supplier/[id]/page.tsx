@@ -22,6 +22,7 @@ import { bulkUploadProducts } from '@/api/product_api';
 
 import SupplierProductsDatatable from '@/components/datatables/suppliersProductsDatatable';
 import SupplierOrdersDatatable from '@/components/datatables/suppliersOrdersDatatable';
+import SupplierUsersDatatable from '@/components/datatables/suppliersUsersDatatable';
 
 
 export default function SupplierDetailsPage() {
@@ -188,11 +189,11 @@ export default function SupplierDetailsPage() {
                         <Tabs.Tab value="products" leftSection={<IconPackage style={{ width: rem(16), height: rem(16) }} />}>
                             Products
                         </Tabs.Tab>
-                        <Tabs.Tab value="users" leftSection={<IconUsers style={{ width: rem(16), height: rem(16) }} />}>
-                            Users
-                        </Tabs.Tab>
                         <Tabs.Tab value="orders" leftSection={<IconReceipt2 style={{ width: rem(16), height: rem(16) }} />}>
                             Orders
+                        </Tabs.Tab>
+                        <Tabs.Tab value="users" leftSection={<IconUsers style={{ width: rem(16), height: rem(16) }} />}>
+                            Users
                         </Tabs.Tab>
                         <Tabs.Tab value="info" leftSection={<IconInfoCircle style={{ width: rem(16), height: rem(16) }} />}>
                             Supplier Info
@@ -201,15 +202,6 @@ export default function SupplierDetailsPage() {
 
                     {/* Products Tab */}
                     <Tabs.Panel value="products">
-                        {/* <Group justify="flex-start" mb="md" mt="md">
-                            <Button 
-                                leftSection={<IconUpload size={16} />}
-                                color="teal"
-                                onClick={openUploadModal}
-                            >
-                                Bulk Upload Excel
-                            </Button>
-                        </Group> */}
                         <Group justify="space-between" mb="md" mt="md">
                             <div>
                                 <Text fw={600}>Supplier Products</Text>
@@ -235,18 +227,15 @@ export default function SupplierDetailsPage() {
                         />
                     </Tabs.Panel>
 
-                    {/* Users Tab (Placeholder for your next component) */}
-                    <Tabs.Panel value="users">
-                        <Text c="dimmed" my="xl" ta="center">User management datatable will go here.</Text>
-                        {/* <SupplierUsersDatatable users={supplier.supplierUsers ?? []} /> */}
-                    </Tabs.Panel>
-
-                    {/* Orders Tab (Placeholder for your next component) */}
                     <Tabs.Panel value="orders">
                         <SupplierOrdersDatatable vendor_code={supplierCode} />
                     </Tabs.Panel>
 
-                    {/* Info Tab (The original details card) */}
+                    <Tabs.Panel value="users">
+                        <Text c="dimmed" my="xl" ta="center">User management datatable will go here.</Text>
+                        <SupplierUsersDatatable vendor_code={supplierCode}/>
+                    </Tabs.Panel>
+
                     <Tabs.Panel value="info">
                         <Grid gutter="xl" p="md">
                             <Grid.Col span={{ base: 12, md: 6 }}>
