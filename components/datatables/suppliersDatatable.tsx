@@ -60,6 +60,7 @@ export const SupplierDatatable = () => {
         data: data ?? [],
         state: {
             isLoading, 
+            showGlobalFilter: true 
         },
         initialState: {
             density: 'xs',

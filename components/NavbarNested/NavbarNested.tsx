@@ -11,18 +11,28 @@ import {
   IconShield,
   IconBuildingFactory,
   IconFileAnalytics,
+  IconBox,
 } from '@tabler/icons-react';
 import { useState } from 'react';
 
 const data = [
   { icon: IconDashboard, label: 'Dashboard',link:'/dashboard' },
   { icon: IconBuildingFactory, label: 'Manage Suppliers',link:'/supplier' },
-  // { icon: IconFileAnalytics , label: 'Reports', link: '/reports' },
+  { icon: IconBox, label: 'Manage Products',
+    links: [
+      { label: 'RCR', link: '/rcr' },
+      { label: 'Product Components', link: '/component' },
+
+      // { label: 'Forecasts', link: '/news/forecasts' },
+      // { label: 'Outlook', link: '/news/outlook' },
+      // { label: 'Real time', link: '/news/real-time' },
+    ],
+  },
   {
     icon: IconFileAnalytics,
     label: 'Reports',
     links: [
-      { label: 'Overview', link: '/news/overview' },
+      { label: 'Payment method', link: '/news/overview' },
       { label: 'Forecasts', link: '/news/forecasts' },
       { label: 'Outlook', link: '/news/outlook' },
       { label: 'Real time', link: '/news/real-time' },

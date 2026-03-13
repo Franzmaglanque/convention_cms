@@ -46,3 +46,135 @@ export const bulkUploadProducts = async(file:File,vendor_code:string) => {
         throw error;
     }
 }
+
+export const fetchRcrProducts = async() => {
+
+    try {
+        const token = useAuthStore.getState().token;
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/rcr/fetch`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            }
+        });
+        
+        if (!res.ok) throw new Error('Failed to fetch supplier details');
+        const json = await res.json();
+        return json.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const fetchDistinctRcrSkus = async() => {
+
+    try {
+        const token = useAuthStore.getState().token;
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/rcr/distinct-sku`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            }
+        });
+        
+        if (!res.ok) throw new Error('Failed to fetch supplier details');
+        const json = await res.json();
+        return json.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+
+export const fetchAllProducts = async() => {
+
+    try {
+        const token = useAuthStore.getState().token;
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/list-all`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            }
+        });
+        
+        if (!res.ok) throw new Error('Failed to fetch supplier details');
+        const json = await res.json();
+        return json.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const fetchComponentProducts = async() => {
+
+    try {
+        const token = useAuthStore.getState().token;
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/list-all`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            }
+        });
+        
+        if (!res.ok) throw new Error('Failed to fetch supplier details');
+        const json = await res.json();
+        return json.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const saveProductComponents = async(product:any) => {
+
+    try {
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/component/save`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            },
+            body: JSON.stringify(product)
+        });
+        
+        if (!res.ok) throw new Error('Failed to save product components ');
+        const json = await res.json();
+        return json.data;
+
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const fetchProductComponents = async(product_id:any) => {
+
+    try {
+
+        const token = useAuthStore.getState().token;
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/components-fetch/${product_id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            }
+        });
+        
+        if (!res.ok) throw new Error('Failed to fetch product components');
+        const json = await res.json();
+        return json.data;
+
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+

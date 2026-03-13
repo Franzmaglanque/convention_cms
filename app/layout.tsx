@@ -11,8 +11,8 @@ import QueryProvider from '@/components/QueryProvider';
 import { AppShellLayout } from '@/components/AppShellLayout/AppShellLayout';
 
 export const metadata = {
-  title: 'Mantine Next.js template',
-  description: 'I am using Mantine with Next.js!',
+  title: 'Convention CMS',
+  description: 'CMS app for Puregold Aling Puring convention!',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
