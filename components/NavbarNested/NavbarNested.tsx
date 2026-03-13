@@ -14,6 +14,7 @@ import {
   IconBox,
 } from '@tabler/icons-react';
 import { useState } from 'react';
+import Link from 'next/link';
 
 const data = [
   { icon: IconDashboard, label: 'Dashboard',link:'/dashboard' },
@@ -60,27 +61,90 @@ const [active, setActive] = useState('Dashboard');
 const items = data.map((item) => {
     // 2. Check if the item has sub-links
     const hasLinks = Array.isArray(item.links);
+    // const nestedLinks = item.links?.map((link) => (
+    //   <NavLink
+    //     key={link.label}
+    //     label={link.label}
+    //     href={link.link}
+    //   />
+    // ));
     const nestedLinks = item.links?.map((link) => (
       <NavLink
+        component={Link}
+        href={link.link}
         key={link.label}
         label={link.label}
-        href={link.link}
       />
     ));
+    
+    // return (
+    //   <NavLink
+    //     key={item.label}
+    //     label={item.label}
+    //     leftSection={<item.icon size="1.2rem" stroke={1.5} />}
+    //     childrenOffset={28}
+    //     active={item.label === active}
+    //     variant="light"
+    //   >
+    //     {hasLinks && nestedLinks}
+    //   </NavLink>
+    // );
 
+    // if (item.link) {
+    //   return (
+    //     <NavLink
+    //       component={Link}
+    //       href={item.link}
+    //       key={item.label}
+    //       label={item.label}
+    //       leftSection={<item.icon size="1.2rem" stroke={1.5} />}
+    //       active={item.label === active}
+    //       onClick={() => setActive(item.label)}
+    //       variant="light"
+    //     />
+    //   );
+    // }
+
+    // return (
+    //   <NavLink
+    //     key={item.label}
+    //     label={item.label}
+    //     leftSection={<item.icon size="1.2rem" stroke={1.5} />}
+    //     childrenOffset={28}
+    //     active={item.label === active}
+    //     variant="light"
+    //   >
+    //     {hasLinks && nestedLinks}
+    //   </NavLink>
+    // );
+   // PATH 1: It is a direct link (e.g., Dashboard, Manage Suppliers)
+    if (item.link) {
+      return (
+        <NavLink
+          component={Link}
+          href={item.link}
+          key={item.label}
+          label={item.label}
+          leftSection={<item.icon size="1.2rem" stroke={1.5} />}
+          active={item.label === active}
+          onClick={() => setActive(item.label)}
+          variant="light"
+        />
+      );
+    }
+
+    // PATH 2: It is a Dropdown folder (e.g., Manage Products, Reports)
     return (
-    <NavLink
+      <NavLink
         key={item.label}
         label={item.label}
         leftSection={<item.icon size="1.2rem" stroke={1.5} />}
+        childrenOffset={28}
         active={item.label === active}
-        onClick={() => !hasLinks && setActive(item.label)} // Only set active if it's a direct link
         variant="light"
-        childrenOffset={28} // This controls the indent of the sub-menu items
-        href={item.link}
-    >
-        {nestedLinks}
-    </NavLink>
+      >
+        {hasLinks && nestedLinks}
+      </NavLink>
     );
   });
 

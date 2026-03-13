@@ -1,6 +1,6 @@
 import '@mantine/core/styles.css';
-import '@mantine/dates/styles.css';       // 1. Add this for date filtering features
-import 'mantine-react-table/styles.css';  // 2. Add this for the table styles
+import '@mantine/dates/styles.css';       
+import 'mantine-react-table/styles.css';  
 import '@mantine/notifications/styles.css';
 
 import React from 'react';
@@ -8,7 +8,6 @@ import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/c
 import { Notifications } from '@mantine/notifications';
 import { theme } from '../theme';
 import QueryProvider from '@/components/QueryProvider';
-import { AppShellLayout } from '@/components/AppShellLayout/AppShellLayout';
 
 export const metadata = {
   title: 'Convention CMS',
@@ -17,15 +16,16 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" {...mantineHtmlProps}>
+    // 1. Add suppressHydrationWarning here to the html tag
+    <html lang="en" {...mantineHtmlProps} suppressHydrationWarning>
       <head>
         <ColorSchemeScript />
       </head>
-      <body>
+      {/* 2. Add suppressHydrationWarning here to the body tag */}
+      <body suppressHydrationWarning>
         <QueryProvider>
           <MantineProvider theme={theme}>
             <Notifications />
-            {/* Wrap your children in the new Shell */}
             {children}
           </MantineProvider>
         </QueryProvider>
