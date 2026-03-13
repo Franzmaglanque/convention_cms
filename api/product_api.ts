@@ -47,6 +47,27 @@ export const bulkUploadProducts = async(file:File,vendor_code:string) => {
     }
 }
 
+export const bulkUploadProductsOverview = async(file:File) => {
+
+    try {
+        const formData = new FormData();
+            formData.append('file', file);
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/bulk-upload/overview`, {
+                method: 'POST',
+                 headers: {
+                    'x-account-session-token': token || ''
+                },
+                body: formData,
+            });
+
+            if (!res.ok) throw new Error('Failed to upload file');
+            return await res.json();
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export const fetchRcrProducts = async() => {
 
     try {

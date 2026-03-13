@@ -22,6 +22,8 @@ const data = [
     links: [
       { label: 'RCR', link: '/rcr' },
       { label: 'Product Components', link: '/component' },
+      { label: 'Product Overview', link: '/overview' },
+
 
       // { label: 'Forecasts', link: '/news/forecasts' },
       // { label: 'Outlook', link: '/news/outlook' },
