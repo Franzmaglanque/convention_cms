@@ -309,224 +309,224 @@ export const SupplierOrdersDatatable = ({ vendor_code }: SupplierOrdersDatatable
     });
 
     return (
-        <Paper p="sm" radius="md">
-            <MantineReactTable table={table} />
+      <Paper p="sm" radius="md">
+        <MantineReactTable table={table} />
 
-            {/* ── Items Modal ─────────────────────────────────────────────────── */}
-            <Modal
-                opened={openedModal === 'items'}
-                onClose={handleCloseModal}
-                title={
-                <Group gap="xs">
-                    <ThemeIcon variant="light" color="blue" size="sm">
-                    <IconPackage size={14} />
-                    </ThemeIcon>
-                    <Text fw={700} size="sm">Order Items</Text>
-                    <Badge variant="light" color="blue" size="sm">{selectedOrderNo}</Badge>
-                    {orderItems && orderItems.length > 0 && (
-                    <Badge variant="filled" color="gray" size="sm">
-                        {orderItems.length} items
-                    </Badge>
-                    )}
-                </Group>
-                }
-                size="70%"
-            >
-                {isLoadingItems ? (
-                <Group justify="center" p="xl">
-                    <Loader size="sm" />
-                </Group>
-                ) : (
-                <Box>
-                    <MantineReactTable table={itemsTable} />
-                </Box>
+        {/* Items Modal */}
+        <Modal
+            opened={openedModal === 'items'}
+            onClose={handleCloseModal}
+            title={
+            <Group gap="xs">
+                <ThemeIcon variant="light" color="blue" size="sm">
+                <IconPackage size={14} />
+                </ThemeIcon>
+                <Text fw={700} size="sm">Order Items</Text>
+                <Badge variant="light" color="blue" size="sm">{selectedOrderNo}</Badge>
+                {orderItems && orderItems.length > 0 && (
+                <Badge variant="filled" color="gray" size="sm">
+                    {orderItems.length} items
+                </Badge>
                 )}
-            </Modal>
-
-           {/* ── Payments Modal ──────────────────────────────────────────────── */}
-      <Modal
-        opened={openedModal === 'payments'}
-        onClose={handleCloseModal}
-        title={
-          <Group gap="xs">
-            <ThemeIcon variant="light" color="teal" size="sm">
-              <IconReceipt2 size={14} />
-            </ThemeIcon>
-            <Text fw={700} size="sm">Payments</Text>
-            <Badge variant="light" color="teal" size="sm">{selectedOrderNo}</Badge>
-            {orderPayments && orderPayments.length > 0 && (
-              <Badge variant="filled" color="gray" size="sm">
-                {orderPayments.length} payment{orderPayments.length !== 1 ? 's' : ''}
-              </Badge>
+            </Group>
+            }
+            size="70%"
+        >
+            {isLoadingItems ? (
+            <Group justify="center" p="xl">
+                <Loader size="sm" />
+            </Group>
+            ) : (
+            <Box>
+                <MantineReactTable table={itemsTable} />
+            </Box>
             )}
-          </Group>
-        }
-        size="lg"
-      >
-        {isLoadingPayments ? (
-          <Group justify="center" p="xl">
-            <Loader size="sm" />
-          </Group>
-        ) : !orderPayments || orderPayments.length === 0 ? (
-          <Center p="xl">
-            <Stack align="center" gap="xs">
-              <ThemeIcon variant="light" color="gray" size="xl" radius="xl">
-                <IconInbox size={20} />
-              </ThemeIcon>
-              <Text c="dimmed" size="sm">No payments found for this order.</Text>
-            </Stack>
-          </Center>
-        ) : (
-          <Stack gap="md">
-            {(orderPayments as OrderPayment[]).map((payment, index) => {
-              const isCash = payment.payment_method?.toLowerCase() === 'cash';
+        </Modal>
 
-              return (
-                <Card
-                  key={payment.id ?? index}
-                  withBorder
-                  radius="md"
-                  padding="md"
-                  style={{
-                    borderColor: isCash
-                      ? 'var(--mantine-color-green-3)'
-                      : 'var(--mantine-color-blue-3)',
-                  }}
-                >
-                  {/* ── Card Header ── */}
-                  <Group justify="space-between" mb="sm">
-                    <Group gap="xs">
-                      <ThemeIcon
+        {/*  Payments Modal  */}
+        <Modal
+          opened={openedModal === 'payments'}
+          onClose={handleCloseModal}
+          title={
+            <Group gap="xs">
+              <ThemeIcon variant="light" color="teal" size="sm">
+                <IconReceipt2 size={14} />
+              </ThemeIcon>
+              <Text fw={700} size="sm">Payments</Text>
+              <Badge variant="light" color="teal" size="sm">{selectedOrderNo}</Badge>
+              {orderPayments && orderPayments.length > 0 && (
+                <Badge variant="filled" color="gray" size="sm">
+                  {orderPayments.length} payment{orderPayments.length !== 1 ? 's' : ''}
+                </Badge>
+              )}
+            </Group>
+          }
+          size="lg"
+        >
+          {isLoadingPayments ? (
+            <Group justify="center" p="xl">
+              <Loader size="sm" />
+            </Group>
+          ) : !orderPayments || orderPayments.length === 0 ? (
+            <Center p="xl">
+              <Stack align="center" gap="xs">
+                <ThemeIcon variant="light" color="gray" size="xl" radius="xl">
+                  <IconInbox size={20} />
+                </ThemeIcon>
+                <Text c="dimmed" size="sm">No payments found for this order.</Text>
+              </Stack>
+            </Center>
+          ) : (
+            <Stack gap="md">
+              {(orderPayments as OrderPayment[]).map((payment, index) => {
+                const isCash = payment.payment_method?.toLowerCase() === 'cash';
+
+                return (
+                  <Card
+                    key={payment.id ?? index}
+                    withBorder
+                    radius="md"
+                    padding="md"
+                    style={{
+                      borderColor: isCash
+                        ? 'var(--mantine-color-green-3)'
+                        : 'var(--mantine-color-blue-3)',
+                    }}
+                  >
+                    {/* ── Card Header ── */}
+                    <Group justify="space-between" mb="sm">
+                      <Group gap="xs">
+                        <ThemeIcon
+                          variant="light"
+                          color={isCash ? 'green' : 'blue'}
+                          size="md"
+                          radius="xl"
+                        >
+                          {isCash ? <IconCash size={16} /> : <IconDeviceMobile size={16} />}
+                        </ThemeIcon>
+                        <Text fw={700} size="sm" tt="capitalize">
+                          {payment.payment_method?.replace(/_/g, ' ') || 'Unknown'}
+                        </Text>
+                      </Group>
+                      <Badge
                         variant="light"
                         color={isCash ? 'green' : 'blue'}
-                        size="md"
-                        radius="xl"
+                        size="sm"
                       >
-                        {isCash ? <IconCash size={16} /> : <IconDeviceMobile size={16} />}
-                      </ThemeIcon>
-                      <Text fw={700} size="sm" tt="capitalize">
-                        {payment.payment_method?.replace(/_/g, ' ') || 'Unknown'}
-                      </Text>
+                        {isCash ? 'Cash' : 'Online'}
+                      </Badge>
                     </Group>
-                    <Badge
-                      variant="light"
-                      color={isCash ? 'green' : 'blue'}
-                      size="sm"
-                    >
-                      {isCash ? 'Cash' : 'Online'}
-                    </Badge>
-                  </Group>
 
-                  <Divider mb="sm" />
+                    <Divider mb="sm" />
 
-                  {isCash ? (
-                    /* ── Cash Payment Fields ── */
-                    <SimpleGrid cols={2} spacing="xs">
-                      <Stack gap={2}>
-                        <Text size="xs" c="dimmed" tt="uppercase" fw={600} lts={0.4}>
-                          Amount Tendered
-                        </Text>
-                        <Text size="sm" fw={700} ff="monospace" c="green.7">
-                          ₱{Number(payment.amount).toLocaleString('en-PH', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </Text>
-                      </Stack>
-
-                      <Stack gap={2}>
-                        <Text size="xs" c="dimmed" tt="uppercase" fw={600} lts={0.4}>
-                          Cash Bill
-                        </Text>
-                        <Text size="sm" fw={700} ff="monospace">
-                          ₱{Number(payment.cash_bill ?? 0).toLocaleString('en-PH', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </Text>
-                      </Stack>
-
-                      <Stack gap={2}>
-                        <Text size="xs" c="dimmed" tt="uppercase" fw={600} lts={0.4}>
-                          Cash Change
-                        </Text>
-                        <Text size="sm" fw={700} ff="monospace" c="orange.6">
-                          ₱{Number(payment.cash_change ?? 0).toLocaleString('en-PH', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </Text>
-                      </Stack>
-
-                      <Stack gap={2}>
-                        <Group gap={4}>
-                          <IconCalendar size={11} color="var(--mantine-color-dimmed)" />
+                    {isCash ? (
+                      /* ── Cash Payment Fields ── */
+                      <SimpleGrid cols={2} spacing="xs">
+                        <Stack gap={2}>
                           <Text size="xs" c="dimmed" tt="uppercase" fw={600} lts={0.4}>
-                            Date
+                            Amount Tendered
                           </Text>
-                        </Group>
-                        <Text size="sm" fw={500}>
-                          {payment.created_at
-                            ? new Date(payment.created_at).toLocaleString('en-PH', {
-                                dateStyle: 'medium',
-                                timeStyle: 'short',
-                              })
-                            : '—'}
-                        </Text>
-                      </Stack>
-                    </SimpleGrid>
-                  ) : (
-                    /* ── Online Payment Fields ── */
-                    <SimpleGrid cols={2} spacing="xs">
-                      <Stack gap={2}>
-                        <Text size="xs" c="dimmed" tt="uppercase" fw={600} lts={0.4}>
-                          Amount
-                        </Text>
-                        <Text size="sm" fw={700} ff="monospace" c="blue.7">
-                          ₱{Number(payment.amount).toLocaleString('en-PH', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </Text>
-                      </Stack>
+                          <Text size="sm" fw={700} ff="monospace" c="green.7">
+                            ₱{Number(payment.amount).toLocaleString('en-PH', {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </Text>
+                        </Stack>
 
-                      <Stack gap={2}>
-                        <Group gap={4}>
-                          <IconHash size={11} color="var(--mantine-color-dimmed)" />
+                        <Stack gap={2}>
                           <Text size="xs" c="dimmed" tt="uppercase" fw={600} lts={0.4}>
-                            Reference No.
+                            Cash Bill
                           </Text>
-                        </Group>
-                        <Text size="sm" fw={600} ff="monospace" c="blue.6">
-                          {payment.reference_no || '—'}
-                        </Text>
-                      </Stack>
-                    </SimpleGrid>
-                  )}
-                </Card>
-              );
-            })}
+                          <Text size="sm" fw={700} ff="monospace">
+                            ₱{Number(payment.cash_bill ?? 0).toLocaleString('en-PH', {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </Text>
+                        </Stack>
 
-            {/* ── Total Footer ── */}
-            <Divider />
-            <Group justify="space-between" px={4}>
-              <Text size="xs" c="dimmed">
-                {(orderPayments as OrderPayment[]).length} payment
-                {(orderPayments as OrderPayment[]).length !== 1 ? 's' : ''}
-              </Text>
-              <Group gap="xs">
-                <Text size="xs" c="dimmed" tt="uppercase" fw={600}>Total Paid</Text>
-                <Text size="md" fw={800} c="teal.7" ff="monospace">
-                  ₱{(orderPayments as OrderPayment[])
-                    .reduce((sum, p) => sum + Number(p.amount), 0)
-                    .toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        <Stack gap={2}>
+                          <Text size="xs" c="dimmed" tt="uppercase" fw={600} lts={0.4}>
+                            Cash Change
+                          </Text>
+                          <Text size="sm" fw={700} ff="monospace" c="orange.6">
+                            ₱{Number(payment.cash_change ?? 0).toLocaleString('en-PH', {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </Text>
+                        </Stack>
+
+                        <Stack gap={2}>
+                          <Group gap={4}>
+                            <IconCalendar size={11} color="var(--mantine-color-dimmed)" />
+                            <Text size="xs" c="dimmed" tt="uppercase" fw={600} lts={0.4}>
+                              Date
+                            </Text>
+                          </Group>
+                          <Text size="sm" fw={500}>
+                            {payment.created_at
+                              ? new Date(payment.created_at).toLocaleString('en-PH', {
+                                  dateStyle: 'medium',
+                                  timeStyle: 'short',
+                                })
+                              : '—'}
+                          </Text>
+                        </Stack>
+                      </SimpleGrid>
+                    ) : (
+                      /* ── Online Payment Fields ── */
+                      <SimpleGrid cols={2} spacing="xs">
+                        <Stack gap={2}>
+                          <Text size="xs" c="dimmed" tt="uppercase" fw={600} lts={0.4}>
+                            Amount
+                          </Text>
+                          <Text size="sm" fw={700} ff="monospace" c="blue.7">
+                            ₱{Number(payment.amount).toLocaleString('en-PH', {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                          </Text>
+                        </Stack>
+
+                        <Stack gap={2}>
+                          <Group gap={4}>
+                            <IconHash size={11} color="var(--mantine-color-dimmed)" />
+                            <Text size="xs" c="dimmed" tt="uppercase" fw={600} lts={0.4}>
+                              Reference No.
+                            </Text>
+                          </Group>
+                          <Text size="sm" fw={600} ff="monospace" c="blue.6">
+                            {payment.reference_no || '—'}
+                          </Text>
+                        </Stack>
+                      </SimpleGrid>
+                    )}
+                  </Card>
+                );
+              })}
+
+              {/* ── Total Footer ── */}
+              <Divider />
+              <Group justify="space-between" px={4}>
+                <Text size="xs" c="dimmed">
+                  {(orderPayments as OrderPayment[]).length} payment
+                  {(orderPayments as OrderPayment[]).length !== 1 ? 's' : ''}
                 </Text>
+                <Group gap="xs">
+                  <Text size="xs" c="dimmed" tt="uppercase" fw={600}>Total Paid</Text>
+                  <Text size="md" fw={800} c="teal.7" ff="monospace">
+                    ₱{(orderPayments as OrderPayment[])
+                      .reduce((sum, p) => sum + Number(p.amount), 0)
+                      .toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </Text>
+                </Group>
               </Group>
-            </Group>
-          </Stack>
-        )}
-      </Modal>
-        </Paper>
+            </Stack>
+          )}
+        </Modal>
+      </Paper>
     );
 };
 

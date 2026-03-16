@@ -12,6 +12,7 @@ import {
   IconBuildingFactory,
   IconFileAnalytics,
   IconBox,
+  IconReceipt2,
 } from '@tabler/icons-react';
 import { useState } from 'react';
 
@@ -23,37 +24,22 @@ const data = [
       { label: 'RCR', link: '/rcr' },
       { label: 'Product Components', link: '/component' },
       { label: 'Product Overview', link: '/overview' },
-
-
-      // { label: 'Forecasts', link: '/news/forecasts' },
-      // { label: 'Outlook', link: '/news/outlook' },
-      // { label: 'Real time', link: '/news/real-time' },
     ],
+  },
+    { 
+    icon: IconReceipt2, // or IconListSearch
+    label: 'Manage Orders', 
+    link: '/orders'     // You will build the page at app/(main)/orders/page.tsx
   },
   {
     icon: IconFileAnalytics,
     label: 'Reports',
     links: [
-      { label: 'Payment method', link: '/news/overview' },
-      { label: 'Forecasts', link: '/news/forecasts' },
-      { label: 'Outlook', link: '/news/outlook' },
-      { label: 'Real time', link: '/news/real-time' },
+      { label: 'Tender report', link: '/payment' },
+      { label: 'Vendor report', link: '/news/forecasts' },
+      { label: 'Orders report', link: '/news/outlook' },
     ],
   },
-  // {
-  //   icon: IconCalendar,
-  //   label: 'Releases',
-  //   links: [
-  //     { label: 'Upcoming', link: '/releases/upcoming' },
-  //     { label: 'Past', link: '/releases/past' },
-  //   ],
-  // },
-  // { icon: IconChartLine, label: 'Analytics' },
-  // { icon: IconFileText, label: 'Contracts' },
-  // { icon: IconSettings, label: 'Settings' },
-  // { icon: IconShield, label: 'Security' },
- 
-
 ];
 
 export function NavbarNested() {
