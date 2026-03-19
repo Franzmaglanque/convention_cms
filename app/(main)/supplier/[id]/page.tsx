@@ -10,7 +10,9 @@ import {
 import { 
     IconArrowLeft, IconPackage, IconUsers, IconReceipt2, 
     IconCurrencyDollar, IconInfoCircle, IconTrendingUp,
-    IconUpload
+    IconUpload,
+    IconFileInvoice,
+    IconPackages
 } from '@tabler/icons-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -23,6 +25,8 @@ import { bulkUploadProducts } from '@/api/product_api';
 import SupplierProductsDatatable from '@/components/datatables/suppliersProductsDatatable';
 import SupplierOrdersDatatable from '@/components/datatables/suppliersOrdersDatatable';
 import SupplierUsersDatatable from '@/components/datatables/suppliersUsersDatatable';
+import SupplierPosDatatable from '@/components/datatables/suppliersPosDatatable';
+import SupplierStocksDatatable from '@/components/datatables/suppliersStocksDatatable';
 
 
 export default function SupplierDetailsPage() {
@@ -195,9 +199,17 @@ export default function SupplierDetailsPage() {
                         <Tabs.Tab value="users" leftSection={<IconUsers style={{ width: rem(16), height: rem(16) }} />}>
                             Users
                         </Tabs.Tab>
+                        <Tabs.Tab value="po" leftSection={<IconFileInvoice style={{ width: rem(16), height: rem(16) }} />}>
+                            Purechase Order(PO)
+                        </Tabs.Tab>
+                        <Tabs.Tab value="stock" leftSection={<IconPackages style={{ width: rem(16), height: rem(16) }} />}>
+                            Stocks
+                        </Tabs.Tab>
                         <Tabs.Tab value="info" leftSection={<IconInfoCircle style={{ width: rem(16), height: rem(16) }} />}>
                             Supplier Info
                         </Tabs.Tab>
+                   
+                        
                     </Tabs.List>
 
                     {/* Products Tab */}
@@ -227,15 +239,28 @@ export default function SupplierDetailsPage() {
                         />
                     </Tabs.Panel>
 
+                    {/* Orders Tab */}
                     <Tabs.Panel value="orders">
                         <SupplierOrdersDatatable vendor_code={supplierCode} />
                     </Tabs.Panel>
 
+                    {/* Users Tab */}
                     <Tabs.Panel value="users">
                         <Text c="dimmed" my="xl" ta="center">User management datatable will go here.</Text>
                         <SupplierUsersDatatable vendor_code={supplierCode}/>
                     </Tabs.Panel>
 
+                        {/* PO Tab */}
+                    <Tabs.Panel value="po">
+                        <SupplierPosDatatable vendor_code={supplierCode}/>
+                    </Tabs.Panel>
+
+                        {/* Stocks Tab */}
+                    <Tabs.Panel value="stock">
+                        <SupplierStocksDatatable vendor_code={supplierCode}/>
+                    </Tabs.Panel>
+
+                    {/* Supplier Info Tab */}
                     <Tabs.Panel value="info">
                         <Grid gutter="xl" p="md">
                             <Grid.Col span={{ base: 12, md: 6 }}>
@@ -253,6 +278,7 @@ export default function SupplierDetailsPage() {
                         </Grid>
                     </Tabs.Panel>
 
+                
                 </Tabs>
             </Paper>
         </Container>

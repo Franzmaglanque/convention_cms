@@ -70,3 +70,44 @@ export const fetchSupplierUsers = async(supplierCode:string) => {
     }
 }
 
+export const fetchSupplierPos = async(supplierCode:string) => {
+
+    try {
+        const token = useAuthStore.getState().token;
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/supplier/cms/supplier-po/${supplierCode}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            }
+        });
+        
+        if (!res.ok) throw new Error('Failed to fetch supplier details');
+        const json = await res.json();
+        return json.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const fetchSupplierStocks = async(supplierCode:string) => {
+
+    try {
+        const token = useAuthStore.getState().token;
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/supplier/cms/supplier-stocks/${supplierCode}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            }
+        });
+        
+        if (!res.ok) throw new Error('Failed to fetch supplier details');
+        const json = await res.json();
+        return json.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
