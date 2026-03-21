@@ -35,7 +35,8 @@ const data = [
     icon: IconFileAnalytics,
     label: 'Reports',
     links: [
-      { label: 'Tender report', link: '/payment' },
+      { label: 'Tender report', link: '/tender' },
+      { label: 'Payments report', link: '/tender_details' },
       { label: 'Vendor report', link: '/news/forecasts' },
       { label: 'Orders report', link: '/news/outlook' },
     ],
