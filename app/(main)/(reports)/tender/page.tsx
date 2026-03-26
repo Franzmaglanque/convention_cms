@@ -20,7 +20,7 @@ export default function SupplierTenderReportGenerator() {
     const token = useAuthStore.getState().token;
     
     // 1. State for the selected convention day
-    const [selectedDate, setSelectedDate] = useState('2026-03-18');
+    const [selectedDate, setSelectedDate] = useState('2026-03-24');
     const [isExporting, setIsExporting] = useState(false);
 
     // 2. Excel Export Function
@@ -80,9 +80,9 @@ export default function SupplierTenderReportGenerator() {
                             value={selectedDate}
                             onChange={setSelectedDate}
                             data={[
-                                { label: 'March 17 (Day 1)', value: '2026-03-17' },
-                                { label: 'March 18 (Day 2)', value: '2026-03-18' },
-                                { label: 'March 19 (Day 3)', value: '2026-03-19' },
+                                { label: 'March 23 (Day 1)', value: '2026-03-23' },
+                                { label: 'March 24 (Day 2)', value: '2026-03-24' },
+                                { label: 'March 25 (Day 3)', value: '2026-03-25' },
                             ]}
                             size="md"
                             color="blue"

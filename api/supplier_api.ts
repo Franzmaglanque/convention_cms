@@ -111,3 +111,25 @@ export const fetchSupplierStocks = async(supplierCode:string) => {
         throw error;
     }
 }
+
+
+export const fetchSupplierWithProducts = async() => {
+
+    try {
+        const token = useAuthStore.getState().token;
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/supplier/fetch-with-products`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            }
+        });
+        
+        if (!res.ok) throw new Error('Failed to fetch supplier details');
+        const json = await res.json();
+        return json.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}

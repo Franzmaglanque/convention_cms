@@ -38,6 +38,8 @@ const data = [
       { label: 'Tender report', link: '/tender' },
       { label: 'Payments report', link: '/tender_details' },
       { label: 'Product report', link: '/schemes' },
+      { label: 'Left-over report', link: '/left_over' },
+
     ],
   },
 ];

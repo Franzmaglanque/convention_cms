@@ -1,5 +1,6 @@
 'use client';
 
+import { fetchSupplierWithProducts } from '@/api/supplier_api';
 import { useAuthStore } from '@/store/useAuthStore';
 import { 
     Button, 
@@ -14,6 +15,7 @@ import {
     Select
 } from '@mantine/core';
 import { IconDownload, IconPackages } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 
 // --- Placeholder for your actual Vendor API fetch ---
@@ -26,6 +28,12 @@ const mockVendors = [
 ];
 
 export default function ProductsSchemeReportGenerator() {
+
+    const { data: vendors, isError, isFetching, isLoading } = useQuery({
+        queryKey: ['vendors-with-products'],
+        queryFn: () => fetchSupplierWithProducts()
+    });
+    
     // Auth token for the API request
     const token = useAuthStore((state) => state.token);
     
@@ -34,19 +42,6 @@ export default function ProductsSchemeReportGenerator() {
     const [isExporting, setIsExporting] = useState(false);
     const [vendorList, setVendorList] = useState(mockVendors);
 
-    // TODO: In a real scenario, fetch your vendor list here on component mount
-    /*
-    useEffect(() => {
-        const fetchVendors = async () => {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/vendors`, { ... });
-            const data = await res.json();
-            // Map data to { value: string, label: string } and prepend the 'all' option
-        };
-        fetchVendors();
-    }, []);
-    */
-
-    // Excel Export Function
     const handleExport = async () => {
         // Prevent export if somehow cleared
         if (!selectedVendor) return; 
@@ -110,7 +105,7 @@ export default function ProductsSchemeReportGenerator() {
                         <Text fw={600} size="sm" mb="xs">Select Vendor</Text>
                         <Select
                             placeholder="Pick a vendor or select All"
-                            data={vendorList}
+                            data={vendors}
                             value={selectedVendor}
                             onChange={setSelectedVendor}
                             searchable
