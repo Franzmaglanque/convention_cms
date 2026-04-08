@@ -37,7 +37,7 @@ const data = [
     links: [
       { label: 'Tender report', link: '/tender' },
       { label: 'Payments report', link: '/tender_details' },
-      { label: 'Product report', link: '/schemes' },
+      { label: 'Scheme report', link: '/schemes' },
       { label: 'Left-over report', link: '/left_over' },
 
     ],

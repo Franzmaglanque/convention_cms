@@ -49,7 +49,7 @@ export default function ProductsSchemeReportGenerator() {
         setIsExporting(true);
         try {
             // Call your Elysia Backend, passing the vendor_code (or 'all') as a query parameter
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reports/products/export?vendor=${selectedVendor}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reports/scheme-component/export?vendor=${selectedVendor}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

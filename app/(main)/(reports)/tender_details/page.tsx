@@ -80,9 +80,9 @@ export default function SupplierTenderReportGenerator() {
                             value={selectedDate}
                             onChange={setSelectedDate}
                             data={[
-                                { label: 'March 23 (Day 1)', value: '2026-03-23' },
-                                { label: 'March 24 (Day 2)', value: '2026-03-24' },
-                                { label: 'March 25 (Day 3)', value: '2026-03-25' },
+                                { label: 'April 6 (Day 1)', value: '2026-04-06' },
+                                { label: 'April 7 (Day 2)', value: '2026-04-07' },
+                                { label: 'April 8 (Day 3)', value: '2026-04-08' },
                             ]}
                             size="md"
                             color="blue"
