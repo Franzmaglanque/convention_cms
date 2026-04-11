@@ -39,6 +39,8 @@ const data = [
       { label: 'Payments report', link: '/tender_details' },
       { label: 'Scheme report', link: '/schemes' },
       { label: 'Left-over report', link: '/left_over' },
+      { label: 'Rebate report', link: '/rebate' },
+
 
     ],
   },
