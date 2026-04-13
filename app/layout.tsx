@@ -9,6 +9,7 @@ import { Notifications } from '@mantine/notifications';
 import { theme } from '../theme';
 import QueryProvider from '@/components/QueryProvider';
 import { AppShellLayout } from '@/components/AppShellLayout/AppShellLayout';
+import { ModalsProvider } from '@mantine/modals';
 
 export const metadata = {
   title: 'Convention CMS',
@@ -26,7 +27,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <MantineProvider theme={theme}>
             <Notifications />
             {/* Wrap your children in the new Shell */}
-            {children}
+            <ModalsProvider>
+               {children}
+            </ModalsProvider>
           </MantineProvider>
         </QueryProvider>
       </body>
