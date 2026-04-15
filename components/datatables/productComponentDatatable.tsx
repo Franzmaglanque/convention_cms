@@ -109,6 +109,7 @@ export const ProductComponentDatatable = () => {
             });
             // Reset the inputs
             setSelectedComponentSku(null);
+            setSearchValue('');
             setComponentQty(1);
         }
     };
