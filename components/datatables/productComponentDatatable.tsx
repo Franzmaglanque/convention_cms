@@ -28,6 +28,7 @@ type SupplierProducts = {
 type BundleComponent = SupplierProducts & { quantity: number };
 
 export const ProductComponentDatatable = () => {
+    const [searchValue, setSearchValue] = useState('');
     const [validationErrors, setValidationErrors] = useState<Record<string, string | undefined>>({});
     
     const [isComponentModalOpen, setIsComponentModalOpen] = useState(false);
@@ -174,10 +175,34 @@ export const ProductComponentDatatable = () => {
         mantineTableProps: { striped: 'even', highlightOnHover: true, withColumnBorders: true },
     });
 
-    const componentOptions = rcrSkus?.map((p:any) => ({
-        value: p.sku,
-        label: `[${p.sku}] ${p.description}`
-    })) || [];
+    const allOptions = useMemo(() => {
+        return rcrSkus?.map((p: any) => ({
+            value: p.sku,
+            label: `[${p.sku}] ${p.description}`
+        })) || [];
+    }, [rcrSkus]);
+
+    const filteredOptions = useMemo(() => {
+        // If the user hasn't typed anything, just show the first 50 items
+        if (!searchValue.trim()) {
+            return allOptions.slice(0, 50);
+        }
+
+        const query = searchValue.toLowerCase();
+        const results = [];
+
+        // We use a standard 'for' loop instead of .filter() so we can STOP early
+        for (let i = 0; i < allOptions.length; i++) {
+            if (allOptions[i].label.toLowerCase().includes(query)) {
+                results.push(allOptions[i]);
+                
+                // CRITICAL: Stop searching once we have 50 results!
+                if (results.length === 50) break; 
+            }
+        }
+        
+        return results;
+    }, [searchValue, allOptions]);
 
     return (
         <Paper p="sm" radius="md">
@@ -210,10 +235,20 @@ export const ProductComponentDatatable = () => {
                                 label="Search Product by SKU or Name"
                                 placeholder="Select a product..."
                                 searchable
-                                data={componentOptions}
-                                // value={selectedComponentSku}
+                                
+                                // 4. Bind our custom state and filtered data to the component
+                                searchValue={searchValue}
+                                onSearchChange={setSearchValue}
+                                data={filteredOptions}
                                 onChange={setSelectedComponentSku}
+                                
+                                // Limit the internal render (optional safety net)
+                                limit={50} 
                                 style={{ flex: 1 }}
+                                
+                                // Optional: Tell Mantine to skip its internal filtering 
+                                // since we already did the hard work perfectly
+                                filter={({ options }) => options}
                             />
                             <NumberInput
                                 label="Qty"
