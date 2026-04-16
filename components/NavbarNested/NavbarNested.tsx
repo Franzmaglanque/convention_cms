@@ -40,9 +40,9 @@ const data = [
     icon: IconFileAnalytics,
     label: 'Reports',
     links: [
-      { label: 'Tender report', link: '/tender' },
-      { label: 'Payments report', link: '/tender_details' },
-      { label: 'Scheme report', link: '/schemes' },
+      { label: 'Sales Report per tender', link: '/tender' },
+      { label: 'Sales Report per transaction', link: '/tender_details' },
+      { label: 'Sales Report per SKU', link: '/schemes' },
       { label: 'Left-over report', link: '/left_over' },
       { label: 'Rebate report', link: '/rebate' },
 
