@@ -5,7 +5,7 @@ const token = useAuthStore.getState().token;
 export const dashboardAnalytics = async() => {
     try {
         const token = useAuthStore.getState().token;
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reports/dashboard_analytics`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cms/dashboard_analytics`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

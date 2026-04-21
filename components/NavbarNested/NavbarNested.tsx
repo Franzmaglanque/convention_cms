@@ -42,11 +42,8 @@ const data = [
     links: [
       { label: 'Sales Report per tender', link: '/tender' },
       { label: 'Sales Report per transaction', link: '/tender_details' },
-      { label: 'Sales Report per SKU', link: '/schemes' },
-      { label: 'Left-over report', link: '/left_over' },
+      { label: 'Products & Schemes', link: '/schemes' },
       { label: 'Rebate report', link: '/rebate' },
-
-
     ],
   },
 ];
