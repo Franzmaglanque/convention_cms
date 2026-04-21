@@ -61,8 +61,9 @@ export default function LoginPage() {
           password: values.password,
         }),
       });
-
+    
       const data = await res.json();
+        console.log('data',data);
       if (data.result === 'success') {
         // 1. Save user data to Zustand for the UI
         setAuth(data.data.user, data.data.token);

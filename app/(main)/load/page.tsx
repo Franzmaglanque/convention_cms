@@ -4,9 +4,11 @@ import { useMemo, useState } from 'react';
 import { Title, Text, Group, Paper, Badge, ActionIcon, Tooltip, Modal, ThemeIcon, Loader, Center, Stack, Card, Divider, SimpleGrid, Box, Button } from '@mantine/core';
 import { IconEye, IconDiscountCheck, IconListDetails, IconReceipt2, IconInbox, IconCash, IconDeviceMobile, IconCalendar, IconHash, IconPackage, IconBolt } from '@tabler/icons-react';
 import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
-import { useQuery } from '@tanstack/react-query';
-import { fetchAllOrders, fetchOrderItems, fetchOrderPayments } from '@/api/order_api';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { fetchAllOrders, fetchLoadOrders, fetchOrderItems, fetchOrderPayments } from '@/api/order_api';
 import { modals } from '@mantine/modals';
+import { executeLoad } from '@/api/load_api';
+import { showErrorNotification, showSuccessNotification } from '@/lib/notifications';
 
 // --- FORMATTER ---
 const formatPhP = (amount: number) => {
@@ -15,33 +17,14 @@ const formatPhP = (amount: number) => {
 
 type SupplierOrders = {
     id: number;
+    vendor_code:string;
     order_no: string;
-    total: string;
-    order_status: string;
-    created_at: string;
-    items_count: number; 
-    customer_card_no: string; 
-};
-
-type OrderItem = {
-  id: number;
-  sku: string;
-  barcode: string;
-  description: string;
-  product_name: string;
-  unit_price: number;
-};
-
-type OrderPayment = {
-  id: number;
-  payment_method: string;
-  amount: number;
-  // Cash-specific
-  cash_bill?: number;
-  cash_change?: number;
-  created_at?: string;
-  // Online-specific
-  reference_no?: string;
+    load_type:string;
+    mobile_number:string;
+    network:string;
+    amount:string;
+    load_status:string;
+    sku:string;
 };
 
 export default function ManageOrdersPage() {
@@ -53,33 +36,34 @@ export default function ManageOrdersPage() {
         pageSize: 10,
     });
 
-    const { data: orderData, isError, isFetching, isLoading } = useQuery({
-        queryKey: ['global-orders',pagination.pageIndex,pagination.pageSize,globalFilter],
-        queryFn: () => fetchAllOrders({
+    const { data: loadData, isError, isFetching, isLoading,refetch } = useQuery({
+        queryKey: ['load-orders',pagination.pageIndex,pagination.pageSize,globalFilter],
+        queryFn: () => fetchLoadOrders({
             pageIndex: pagination.pageIndex,
             pageSize: pagination.pageSize,
             globalFilter: globalFilter
         })
     });
 
-    const { data: orderPayments, isLoading: isLoadingPayments } = useQuery({
-        queryKey: ['order-payments', selectedOrderNo],
-        queryFn: () => fetchOrderPayments(selectedOrderNo!),
-        enabled: openedModal === 'payments' && !!selectedOrderNo,
-    });
-    
-    const { data: orderItems, isLoading: isLoadingItems } = useQuery({
-        queryKey: ['order-items', selectedOrderNo],
-        queryFn: () => fetchOrderItems(selectedOrderNo!),
-        enabled: openedModal === 'items' && !!selectedOrderNo,
+    const executeLoadMutation = useMutation({
+        mutationFn: async (row:any) => executeLoad(row),
+        onSuccess: (res) => {
+            console.log('executeLoadMutation',res)
+            showSuccessNotification('Success', res.description);
+            refetch()
+        },
+        onError: (error) => {
+            console.error(error);
+            showErrorNotification('Upload Failed', 'There was an error processing the Excel file.');
+        }
     });
 
     // --- TABLE COLUMNS ---
     const columns = useMemo<MRT_ColumnDef<SupplierOrders>[]>(() => [
         { 
-            accessorKey: 'created_at', 
-            header: 'Date & Time', 
-            size: 160 
+            accessorKey: 'vendor_code', 
+            header: 'Vendor', 
+            size: 100 
         },
         { 
             accessorKey: 'order_no', 
@@ -88,23 +72,23 @@ export default function ManageOrdersPage() {
             Cell: ({ cell }) => <Text fw={600} c="blue">{cell.getValue<string>()}</Text>
         },
         { 
-            accessorKey: 'customer_card_no', 
-            header: 'Customer Card', 
-            size: 180 
+            accessorKey: 'load_type', 
+            header: 'Load Type', 
+            size: 160 
         },
         { 
-            accessorKey: 'vendor_code', 
-            header: 'Vendor', 
-            size: 100 
+            accessorKey: 'mobile_number', 
+            header: 'Mobile Number', 
+            size: 160 
         },
         { 
-            accessorKey: 'total', 
+            accessorKey: 'amount', 
             header: 'Total Amount',
             size: 120,
             Cell: ({ cell }) => <Text fw={700}>{formatPhP(cell.getValue<number>())}</Text>
         },
         { 
-            accessorKey: 'order_status', 
+            accessorKey: 'load_status', 
             header: 'Status',
             size: 120,
             Cell: ({ cell }) => {
@@ -117,17 +101,22 @@ export default function ManageOrdersPage() {
                 return <Badge color={color} variant="light">{status.toUpperCase()}</Badge>;
             }
         },
+        { 
+            accessorKey: 'created_at', 
+            header: 'Date & Time', 
+            size: 160 
+        },   
     ], []);
 
     const table = useMantineReactTable({
         columns,
-        data: orderData?.data || [],
+        data: loadData?.data || [],
         enableGlobalFilter: true, // This enables the search bar at the top right!
         initialState: { 
             density: 'xs',
             showGlobalFilter: true, // Show search bar by default
         },
-        rowCount: orderData?.meta?.totalRowCount ?? 0,
+        rowCount: loadData?.meta?.totalRowCount ?? 0,
         mantineSearchTextInputProps: {
             placeholder: 'Search Order No. or Card...',
             style: { minWidth: '300px' }, // Make the search bar wide and prominent
@@ -153,10 +142,10 @@ export default function ManageOrdersPage() {
         enableRowActions: true,
         positionActionsColumn: 'last',
         renderRowActions: ({ row }) => {
-             const handleConfirmExecution = async (orderNo: string) => {
-                console.log("Executing load for:", orderNo);
-                // TODO: Add your API call here to execute the load
-                // e.g., await fetch(`/api/load/execute/${orderNo}`, { method: 'POST' });
+            const isCompleted = row.original.load_status === 'completed';
+             const handleConfirmExecution = async (rowData: any) => {
+                console.log("Executing load for:", rowData);
+                executeLoadMutation.mutate(rowData);
             };
 
             const openConfirmModal = () => modals.openConfirmModal({
@@ -170,7 +159,7 @@ export default function ManageOrdersPage() {
                 ),
                 labels: { confirm: 'Yes, Execute Load', cancel: 'Cancel' },
                 confirmProps: { color: 'blue', leftSection: <IconBolt size={16} /> },
-                onConfirm: () => handleConfirmExecution(row.original.order_no),
+                onConfirm: () => handleConfirmExecution(row.original),
             });
 
              return (
@@ -180,8 +169,7 @@ export default function ManageOrdersPage() {
                     variant="light"
                     leftSection={<IconBolt stroke={1.5} size={16} />}
                     onClick={openConfirmModal}
-                    // Optional: Disable the button if it's already completed!
-                    // disabled={row.original.load_status === 'completed'}
+                    disabled={isCompleted}
                 >
                     Execute
                 </Button>
