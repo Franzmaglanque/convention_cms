@@ -13,6 +13,7 @@ import {
   IconFileAnalytics,
   IconBox,
   IconReceipt2,
+  IconTag,
 } from '@tabler/icons-react';
 import { useState } from 'react';
 
@@ -31,10 +32,17 @@ const data = [
     label: 'Manage Orders', 
     link: '/orders'     // You will build the page at app/(main)/orders/page.tsx
   },
-   { 
+  { 
     icon: IconReceipt2, // or IconListSearch
     label: 'Manage Load', 
     link: '/load'     // You will build the page at app/(main)/load/page.tsx
+  },
+  { 
+    icon: IconTag, // or IconListSearch
+    label: 'Promotions',
+    links: [
+      { label: 'Flash Deals', link: '/flash_deals' },
+    ],
   },
   {
     icon: IconFileAnalytics,

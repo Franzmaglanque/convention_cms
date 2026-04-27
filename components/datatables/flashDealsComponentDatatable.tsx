@@ -13,6 +13,9 @@ import { Badge, Paper, ActionIcon, Tooltip, Group, Button, Text, Stack, Modal, N
 import { IconTrash, IconPuzzle, IconPlus } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchAllProducts, fetchDistinctRcrSkus, fetchProductComponents, saveProductComponents } from '@/api/product_api';
+import { fetchVendorSchemes, fetchFlashDealHeaders } from '@/api/supplier_api';
+import { useAuthStore } from '@/store/useAuthStore';
+
 import { showErrorNotification, showSuccessNotification } from '@/lib/notifications';
 
 type SupplierProducts = {
@@ -27,7 +30,9 @@ type SupplierProducts = {
 // New Type for the components inside a bundle
 type BundleComponent = SupplierProducts & { quantity: number };
 
-export const ProductComponentDatatable = () => {
+export const FlashDealsComponentDatatable = () => {
+    // const {foo} = useAuthStore.getState().user;
+    
     const [searchValue, setSearchValue] = useState('');
     const [validationErrors, setValidationErrors] = useState<Record<string, string | undefined>>({});
     
@@ -37,6 +42,16 @@ export const ProductComponentDatatable = () => {
     const [bundleComponents, setBundleComponents] = useState<BundleComponent[]>([]);
     const [selectedComponentSku, setSelectedComponentSku] = useState<string | null>(null);
     const [componentQty, setComponentQty] = useState<number | string>(1);
+
+    // const { data: schemes, isLoading: isSchemesLoading } = useQuery({
+    //     queryKey: ['vendor_schemes'],
+    //     queryFn: () => fetchVendorSchemes()
+    // });
+
+    const { data: flashDealHeaders, isLoading: isFlashDealHeadersLoading } = useQuery({
+        queryKey: ['flash_deal_headers'],
+        queryFn: () => fetchFlashDealHeaders()
+    });
 
     const { data: all_products, isLoading } = useQuery({
         queryKey: ['all_products'],
@@ -133,42 +148,46 @@ export const ProductComponentDatatable = () => {
     
     const columns = useMemo<MRT_ColumnDef<SupplierProducts>[]>(
         () => [
-            { accessorKey: 'vendor_code', header: 'Vendor',size:50 },
-            { accessorKey: 'sku', header: 'SKU',size:50 },
-            { accessorKey: 'barcode', header: 'Barcode' ,size:50},
-            { accessorKey: 'description', header: 'Description' },
-            { accessorKey: 'promo_price', header: 'Price',size:50 },
-            // { accessorKey: 'component_count', header: 'Component Count',size:25 },
+            { accessorKey: 'id', header: 'Id',size:50 },
+            { accessorKey: 'vendor_code', header: 'Vendor code',size:50 },
+            { accessorKey: 'label', header: 'Description',size:50 },
+            { accessorKey: 'start_time', header: 'Start Time' ,size:50},
+            { accessorKey: 'end_time', header: 'End Time' ,size:50},
             { 
-                accessorKey: 'component_count', 
-                header: 'Comp. Count', // Shortening the header helps a lot
+                accessorKey: 'scheme_count', 
+                header: 'Scheme count',
                 size: 50,
-                minSize: 50,
-                maxSize: 50,
+                // Center the header text
                 mantineTableHeadCellProps: {
-                    style: { width: '50px' },
+                    align: 'center',
                 },
+                // Center the cell value
                 mantineTableBodyCellProps: {
-                    style: { width: '50px' },
+                    align: 'center',
                 },
             },
-            {
-                accessorKey: 'is_active',
-                header: 'Status',
-                size:50,
-                Cell: ({ cell }) => {
-                    const status = cell.getValue<string>();
-                    const color = status === 'true' ? 'green' : 'red';
-                    return <Badge color={color}>{status === 'true' ? 'Active' : 'Inactive'}</Badge>;
-                }
-            }
+            { accessorKey: 'created_at', header: 'Created At',size:50 }
+            // {
+            //     accessorKey: 'is_active',
+            //     header: 'Status',
+            //     size:50,
+            //     Cell: ({ cell }) => {
+            //         const status = cell.getValue<string>();
+            //         const color = status === 'true' ? 'green' : 'red';
+            //         return <Badge color={color}>{status === 'true' ? 'Active' : 'Inactive'}</Badge>;
+            //     }
+            // }
         ],
         [validationErrors],
     );
 
+    console.log('flashDealHeaders', flashDealHeaders);
     const table = useMantineReactTable({
         columns,
-        data: all_products ?? [],
+        data: flashDealHeaders ?? [],
+        state: {
+            isLoading: isFlashDealHeadersLoading,
+        },
         initialState: { density: 'xs', showGlobalFilter: true },
         enableRowActions: true,
         positionActionsColumn: 'last', 
@@ -222,87 +241,94 @@ export const ProductComponentDatatable = () => {
     return (
         <Paper p="sm" radius="md">
             <MantineReactTable table={table} />
-
-            <Modal
+           <Modal
                 opened={isComponentModalOpen}
                 onClose={() => setIsComponentModalOpen(false)}
-                title={<Text fw={600}>Manage Bundle Components</Text>}
+                title={<Text fw={600}>Manage Flash Deal SKUs</Text>}
                 size="lg" // Made larger to accommodate the table
             >
+                {/* Note: Assuming 'selectedProduct' now represents your selected Flash Deal Header */}
                 {selectedProduct && (
                     <Stack>
-                        {/* Bundle Context */}
+                        {/* Flash Deal Header Context */}
                         <Paper withBorder p="sm" bg="gray.0">
-                            <Text size="sm" c="dimmed">Main Bundle Product:</Text>
+                            <Text size="sm" c="dimmed">Active Flash Deal Header:</Text>
                             <Text fw={600} size="lg">{selectedProduct.description}</Text>
                             <Group mt={4}>
-                                <Badge variant="light">SKU: {selectedProduct.sku}</Badge>
-                                <Badge color="green" variant="light">Price: ₱{selectedProduct.promo_price}</Badge>
+                                <Badge variant="light">Header ID: {selectedProduct.sku}</Badge>
                             </Group>
                         </Paper>
 
                         <Divider my="sm" />
 
-                        {/* Add Component Form */}
-                        <Text fw={600}>Add Items to Bundle</Text>
+                        {/* Add SKU Form */}
+                        <Text fw={600}>Add Schemes to Flash Deal</Text>
                         <Group align="flex-end">
                             <Select
                                 label="Search Product by SKU or Name"
                                 placeholder="Select a product..."
                                 searchable
                                 
-                                // 4. Bind our custom state and filtered data to the component
+                                // Bind custom state and filtered data
                                 searchValue={searchValue}
                                 onSearchChange={setSearchValue}
                                 data={filteredOptions}
                                 onChange={setSelectedComponentSku}
                                 
-                                // Limit the internal render (optional safety net)
                                 limit={50} 
                                 style={{ flex: 1 }}
-                                
-                                // Optional: Tell Mantine to skip its internal filtering 
-                                // since we already did the hard work perfectly
                                 filter={({ options }) => options}
                             />
+                            
+                            {/* REPLACED QTY WITH FLASH DEAL PRICE */}
                             <NumberInput
-                                label="Qty"
-                                value={componentQty}
-                                onChange={setComponentQty}
-                                min={1}
-                                w={80}
+                                label="Flash Price"
+                                placeholder="0.00"
+                                prefix="₱"
+                                decimalScale={2}
+                                fixedDecimalScale
+                                hideControls
+                                // value={flashDealPrice} // Make sure to rename componentQty to flashDealPrice in your state!
+                                // onChange={setFlashDealPrice}
+                                min={0.01}
+                                w={120} // Made slightly wider to fit currency formatting
                             />
+                            
                             <Button 
                                 onClick={handleAddComponent} 
-                                disabled={!selectedComponentSku}
+                                // Disabled if no SKU is selected or if price is 0/empty
+                                // disabled={!selectedComponentSku || !flashDealPrice}
                                 leftSection={<IconPlus size={16} />}
                             >
                                 Add
                             </Button>
                         </Group>
 
-                        {/* Current Components Table */}
-                        <Text fw={600} mt="md">Bundle Contents</Text>
+                        {/* Current Flash Deal SKUs Table */}
+                        <Text fw={600} mt="md">Included SKUs</Text>
                         {isProductComponentsLoading ? (
-                            <Text c="dimmed" size="sm" fs="italic">Loading existing components...</Text>
+                            <Text c="dimmed" size="sm" fs="italic">Loading existing SKUs...</Text>
                         ) : bundleComponents.length === 0 ? (
-                            <Text c="dimmed" size="sm" fs="italic">No components added yet. Use the form above to add items.</Text>
+                            <Text c="dimmed" size="sm" fs="italic">No SKUs added yet. Use the form above to add items.</Text>
                         ) : (
                             <Table striped highlightOnHover withTableBorder>
                                 <Table.Thead>
                                     <Table.Tr>
                                         <Table.Th>SKU</Table.Th>
                                         <Table.Th>Description</Table.Th>
-                                        <Table.Th style={{ width: 80 }}>Qty</Table.Th>
+                                        {/* UPDATED TABLE HEADER TO PRICE */}
+                                        <Table.Th style={{ width: 120 }}>Flash Price</Table.Th>
                                         <Table.Th style={{ width: 50 }}></Table.Th>
                                     </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>
-                                    {bundleComponents.map((comp) => (
+                                    {/* Note: You may want to rename 'bundleComponents' to 'flashDealComponents' in your state later */}
+                                    {bundleComponents.map((comp:any) => (
                                         <Table.Tr key={comp.sku}>
                                             <Table.Td>{comp.sku}</Table.Td>
                                             <Table.Td>{comp.description}</Table.Td>
-                                            <Table.Td fw={600}>{comp.quantity}</Table.Td>
+                                            {/* UPDATED TABLE CELL TO FORMAT PRICE */}
+                                            <Table.Td fw={600} c="green.7">₱{Number(comp.price || comp.quantity).toFixed(2)}</Table.Td>
                                             <Table.Td>
                                                 <ActionIcon color="red" variant="subtle" onClick={() => handleRemoveComponent(comp.sku)}>
                                                     <IconTrash size={16} />
@@ -314,12 +340,8 @@ export const ProductComponentDatatable = () => {
                             </Table>
                         )}
 
-                        {/* <Button mt="xl" fullWidth color="violet" onClick={() => {
-                            // TODO: Connect to useMutation for saving the bundle components to the backend
-                            console.log('Ready to save bundle components for SKU:', selectedProduct.sku, bundleComponents);
-                        }}> */}
                         <Button mt="xl" fullWidth color="violet" onClick={() => handlesaveComponent()}>
-                            Save Bundle Configuration
+                            Save Flash Deal SKUs
                         </Button>
                     </Stack>
                 )}
@@ -328,4 +350,4 @@ export const ProductComponentDatatable = () => {
     );
 };
 
-export default ProductComponentDatatable;
+export default FlashDealsComponentDatatable;
