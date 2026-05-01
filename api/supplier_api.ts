@@ -173,3 +173,30 @@ export const fetchFlashDealHeaders = async() => {
         throw error;
     }
 }
+
+
+export const fetchActiveSuppliers = async() => {
+
+    try {
+ 
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/supplier/cms/fetch-active-suppliers`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error(`Error: Failed to fetch suppliers`);
+        }
+
+        const response = await res.json();
+        return response.data;
+
+    } catch (error) {
+
+        console.error(error);
+        throw error;
+    }
+}

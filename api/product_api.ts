@@ -110,7 +110,6 @@ export const fetchDistinctRcrSkus = async() => {
     }
 }
 
-
 export const fetchAllProducts = async() => {
 
     try {
@@ -182,6 +181,28 @@ export const fetchProductComponents = async(product_id:any) => {
 
         const token = useAuthStore.getState().token;
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/components-fetch/${product_id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            }
+        });
+        
+        if (!res.ok) throw new Error('Failed to fetch product components');
+        const json = await res.json();
+        return json.data;
+
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const fetchVendorProducts = async(vendor_code:string) => {
+
+    try {
+        const token = useAuthStore.getState().token;
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/vendor/list/${vendor_code}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

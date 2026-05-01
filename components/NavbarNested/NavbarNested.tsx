@@ -25,6 +25,7 @@ const data = [
       { label: 'RCR', link: '/rcr' },
       { label: 'Product Components', link: '/component' },
       { label: 'Product Overview', link: '/overview' },
+      { label: 'Print Barcodes', link: '/barcode' },
     ],
   },
   { 
