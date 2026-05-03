@@ -42,7 +42,7 @@ const data = [
     icon: IconTag, // or IconListSearch
     label: 'Promotions',
     links: [
-      { label: 'Flash Deals', link: '/flash_deals' },
+      { label: 'Clearance Sale', link: '/clearance_sale' },
     ],
   },
   {
