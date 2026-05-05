@@ -287,3 +287,28 @@ export const saveClearanceSchemes = async(product:any) => {
     }
 }
 
+export const executeClearance = async(clearanceParameters:any) => {
+
+    
+
+    try {
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cms/clearance/execute`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-account-session-token': token || ''
+            },
+            body: JSON.stringify(clearanceParameters)
+        });
+        
+        if (!res.ok) throw new Error('Failed to save execute clearance ');
+        const json = await res.json();
+        return json.data;
+
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
