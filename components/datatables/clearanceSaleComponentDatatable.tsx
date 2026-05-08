@@ -185,7 +185,6 @@ export const ClearanceSaleComponentDatatable = () => {
                 { accessorKey: 'id', header: 'Id', size: 50 },
                 { accessorKey: 'vendor_code', header: 'Vendor code', size: 50 },
                 { accessorKey: 'label', header: 'Description', size: 50 },
-                { accessorKey: 'start_time', header: 'Start Time' , size: 50},
                 { 
                     accessorKey: 'status', 
                     header: 'Status', 

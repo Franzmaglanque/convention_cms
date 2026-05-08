@@ -5,20 +5,55 @@ import { DateTimePicker } from '@mantine/dates';
 import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'react';
 import ClearanceSaleComponentDatatable from '@/components/datatables/clearanceSaleComponentDatatable';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { fetchActiveSuppliers } from '@/api/supplier_api';
+import { saveClearanceHeader } from '@/api/promotion_api';
+import { showErrorNotification, showSuccessNotification } from '@/lib/notifications';
+
 
 export default function PriceUpdatePage() {
     const [opened, { open, close }] = useDisclosure(false);
+    const { data: active_suppliers, refetch } = useQuery({
+        queryKey: ['active-suppliers'],
+        queryFn: () => fetchActiveSuppliers(),
+        enabled: opened
+    });
+
+    const saveClearanceHeaderMutation = useMutation({
+        mutationFn: async (row:any) => saveClearanceHeader(row),
+        onSuccess: (res) => {
+            console.log('executeLoadMutation',res)
+            showSuccessNotification('Success', res.description);
+            refetch()
+        },
+        onError: (error) => {
+            console.error(error);
+            showErrorNotification('Upload Failed', 'There was an error processing the Excel file.');
+        }
+    });
 
     const [vendor, setVendor] = useState<string | null>(null);
     // const [startTime, setStartTime] = useState<Date | null>(null);
-    const [startTime, setStartTime] = useState<string | null>(null);
+    // const [startTime, setStartTime] = useState<string | null>(null);
     const [label, setLabel] = useState('');
 
     const handleCreateClearance = () => {
         // Logic to call your CmsService.saveClearanceSchemes goes here
-        console.log({ vendor, startTime, label });
+        console.log({ vendor,  label });
+        saveClearanceHeaderMutation.mutate({
+            vendor_code:vendor,
+            label:label
+        });
+
         close();
     };
+
+    const vendorOptions = active_suppliers?.map((supplier:any) => ({
+        value: supplier.vendor_code.toString(),
+        label: `${supplier.vendor_code} - ${supplier.vendor_name}`
+    }))
+    console.log('active_suppliers',active_suppliers);
+    console.log('foo',vendorOptions);
     
     return (
         <>
@@ -29,17 +64,10 @@ export default function PriceUpdatePage() {
                     <Select
                         label="Select Vendor"
                         placeholder="Choose a vendor"
-                        data={['Vendor A', 'Vendor B', 'Vendor C']} // Map your vendor list here
+                        data={vendorOptions}
                         value={vendor}
                         onChange={setVendor}
                         searchable
-                    />
-                    
-                    <DateTimePicker
-                        label="Start Time"
-                        placeholder="Pick date and time"
-                        value={startTime}
-                        onChange={setStartTime}
                     />
 
                     <TextInput

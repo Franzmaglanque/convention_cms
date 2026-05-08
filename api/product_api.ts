@@ -224,7 +224,7 @@ export const fetchClearance = async() => {
 
      try {
         const token = useAuthStore.getState().token;
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cms/clearance-sale`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/promotion/clearance-sale`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -246,7 +246,7 @@ export const fetchClearanceItems = async(clearance_id:string | number) => {
 
      try {
         const token = useAuthStore.getState().token;
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cms/clearance-sale/products/${clearance_id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/promotion/clearance-sale/products/${clearance_id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -268,7 +268,7 @@ export const saveClearanceSchemes = async(product:any) => {
 
     try {
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cms/clearance/save`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/promotion/clearance/save`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -293,7 +293,7 @@ export const executeClearance = async(clearanceParameters:any) => {
 
     try {
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cms/clearance/execute`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/promotion/clearance/execute`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
