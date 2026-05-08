@@ -31,33 +31,37 @@ export const VendorProductCatalog = ({ vendor_code }: { vendor_code: string }) =
     });
 
     const handleDownloadPdf = async () => {
-        const element = printRef.current;
-        if (!element) return;
-
+        setIsGeneratingPdf(true);
         try {
-            setIsGeneratingPdf(true);
-
-            // Take a high-resolution snapshot of the catalog div
-            const canvas = await html2canvas(element, { 
-                scale: 2, // 2x scale makes the barcodes crisp in the PDF
-                useCORS: true, 
+            const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiBaseUrl}/cms/vendor-catalog/download/${vendor_code}`, {
+                method: 'GET',
+                headers: {
+                    // If your API needs a token, add it here:
+                    // 'Authorization': `Bearer ${yourToken}` 
+                }
             });
-            
-            const imgData = canvas.toDataURL('image/png');
 
-            // Create a standard A4 PDF
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            
-            // Calculate height to maintain the aspect ratio of the snapshot
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            if (!response.ok) throw new Error('Download failed');
 
-            // Add the image to the PDF and trigger the download
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`Vendor_${vendor_code}_Catalog.pdf`);
+            // ✨ Convert the response to a Blob (Binary Large Object)
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            
+            // Create a temporary link and click it to trigger the download
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `catalog-${vendor_code}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            
+            // Cleanup
+            link.remove();
+            window.URL.revokeObjectURL(url);
             
         } catch (error) {
-            console.error("Failed to generate PDF", error);
+            console.error("PDF Generation Error:", error);
+            alert("Failed to download catalog. Please try again.");
         } finally {
             setIsGeneratingPdf(false);
         }
