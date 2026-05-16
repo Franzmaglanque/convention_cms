@@ -13,33 +13,6 @@ const mockStats = {
     activeSuppliers: 84,
 };
 
-// const topSuppliers = [
-//     { id: 1, name: 'Vendor A (Tech Gadgets)', sales: '₱450,000', percent: 80 },
-//     { id: 2, name: 'Vendor B (Anime Merch)', sales: '₱320,000', percent: 65 },
-//     { id: 3, name: 'Vendor C (Food Stall)', sales: '₱150,000', percent: 40 },
-//     { id: 4, name: 'Vendor D (Art Prints)', sales: '₱85,000', percent: 25 },
-// ];
-
-// const topSuppliers = [
-//     { id: '10154', name: 'Vendor A (Tech Gadgets)', score: 450000 },
-//     { id: '10252', name: 'Vendor B (Anime Merch)', score: 320000 },
-//     { id: '10399', name: 'Vendor C (Food Stall)', score: 150000 },
-//     { id: '10400', name: 'Vendor D (Art Prints)', score: 85000 },
-// ];
-
-// const topProducts = [
-//     { id: 1, name: 'Mechanical Keyboard X1', sold: 450, supplier: 'Vendor A' },
-//     { id: 2, name: 'Mystery Blind Box', sold: 380, supplier: 'Vendor B' },
-//     { id: 3, name: 'Spicy Ramen Bowl', sold: 310, supplier: 'Vendor C' },
-//     { id: 4, name: 'Convention Exclusive Pin', sold: 295, supplier: 'Vendor B' },
-// ];
-
-// const paymentMethods = [
-//     { id: 1, method: 'Cash', amount: '₱650,000', percent: 52, color: 'green' },
-//     { id: 2, method: 'E-Wallet (GCash/Maya)', amount: '₱425,000', percent: 34, color: 'blue' },
-//     { id: 3, method: 'Credit/Debit Card', amount: '₱170,000', percent: 14, color: 'violet' },
-// ];
-
 const topProducts = [
     { id: '853077', name: 'HANA SHAMPOO PINK PASSION', sold: 450, trend: '+12%' },
     { id: '825523', name: 'OK YUMSHOTS MIXED 70G', sold: 380, trend: '+5%' },
@@ -74,9 +47,6 @@ export default function Dashboard() {
     });
     console.log('dashboardAnalytics test',analytics)
 
-    // You can use React Query here later to fetch real dashboard statistics
-    // const { data: stats } = useQuery({ queryKey: ['dashboardStats'], queryFn: fetchStats });
-    // Convert payment amounts to percentages for the RingProgress
     const totalPayments = paymentMethods.reduce((acc, curr) => acc + curr.amount, 0);
     const ringData = paymentMethods.map(pm => ({
         value: (pm.amount / totalPayments) * 100,
