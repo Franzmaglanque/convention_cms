@@ -55,6 +55,8 @@ const data = [
       { label: 'Sales Report per transaction', link: '/tender_details' },
       { label: 'Products & Schemes', link: '/schemes' },
       { label: 'Rebate report', link: '/rebate' },
+      { label: 'SKU report', link: '/sku' },
+
     ],
   },
 ];
